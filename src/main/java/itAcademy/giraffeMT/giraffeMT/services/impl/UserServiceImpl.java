@@ -1,7 +1,8 @@
 package itAcademy.giraffeMT.giraffeMT.services.impl;
 
 import itAcademy.giraffeMT.giraffeMT.entities.User;
-import itAcademy.giraffeMT.giraffeMT.exceptions.UserNotFound;
+import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
+import itAcademy.giraffeMT.giraffeMT.models.UserModel;
 import itAcademy.giraffeMT.giraffeMT.repositories.UserRepository;
 import itAcademy.giraffeMT.giraffeMT.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +22,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) throws UserNotFound {
+    public User getById(Long id) throws NotFound {
         Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow(UserNotFound::new);
+        return user.orElse(null);
     }
 
     @Override
-    public User create(User user) {
-        return null;
+    public User create(UserModel model) {
+        User user = User.builder().fullName(model.getFullName())
+                .login(model.getLogin())
+                .password(model.getPassword()).build();
+        return userRepository.save(user);
     }
 
     @Override
-    public void delete(Long id) throws UserNotFound {
+    public void delete(Long id) throws NotFound {
         User user = getById(id);
         if (user != null)
             userRepository.delete(user);
-        throw new UserNotFound();
+        throw new NotFound("User not found");
     }
 
     @Override
     public User update(User user) {
         return userRepository.save(user);
-
     }
 }

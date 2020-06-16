@@ -1,5 +1,6 @@
 package itAcademy.giraffeMT.giraffeMT.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.GeneratorType;
@@ -22,6 +23,7 @@ public class User {
 
     @Column(name = "login")
     String login;
+    @JsonIgnore
     @Column(name = "password")
     String password;
 

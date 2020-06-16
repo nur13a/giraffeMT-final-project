@@ -10,18 +10,16 @@ import javax.persistence.*;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "rolesss")
-public class Role {
+@Table(name = "subcategory")
+public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "roleName")
-    String roleName;
+    @Column(name = "name")
+    String name;
 
     @ManyToOne
-    @JoinColumn(name = "user")
-    User user;
-
-
+    @JoinColumn(name = "categoryId", referencedColumnName = "id")
+    Category category;
 }

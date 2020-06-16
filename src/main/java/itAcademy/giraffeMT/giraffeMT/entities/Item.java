@@ -1,5 +1,6 @@
 package itAcademy.giraffeMT.giraffeMT.entities;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,8 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "item")
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,16 +39,21 @@ public class Item {
     String itemState;
 
     @ManyToOne
-    @Column(name = "category_id")
+    @JoinColumn(name = "category_id")
     Category category;
 
     @ManyToOne
-    @Column(name = "user_id")
+    @JoinColumn(name = "subcategory")
+    Subcategory subcategory;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     User user;
 
     @Column(name = "volume")
     Double volume;
 
+    @Column(name = "model")
+    String model;
     @Column(name = "driveUnit")
     String driveUnit;
 
@@ -53,7 +61,7 @@ public class Item {
     String bodyType;
 
     @Column(name = "issueYear")
-    Date issueYear;
+    String issueYear;
 
     @Column(name = "millage")
     Integer millage;
@@ -61,31 +69,34 @@ public class Item {
     @Column(name = "size")
     String size;
 
-    @Column(name="color")
+    @Column(name = "color")
     String color;
 
-    @Column(name="ssd")
+    @Column(name = "ssd")
     String ssd;
 
-    @Column(name="memory")
+    @Column(name = "memory")
     String memory;
 
-    @Column(name="numberCores")
+    @Column(name = "numberCores")
     Integer numberCores;
 
-    @Column(name="cpu")
+    @Column(name = "cpu")
     String cpu;
 
-    @Column(name="address")
+    @Column(name = "address")
     String address;
 
-    @Column(name="square")
+    @Column(name = "square")
     Double square;
 
-    @Column(name="floors")
+    @Column(name = "floors")
     Integer floors;
 
-    @Column(name="roomNumber")
+    @Column(name = "roomNumber")
     Integer roomNumber;
-
+    @Column(name = "district")
+    String district;
+    Double landArea;
+    String gender;
 }
