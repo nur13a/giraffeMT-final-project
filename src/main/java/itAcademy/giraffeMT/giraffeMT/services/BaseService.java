@@ -1,5 +1,7 @@
 package itAcademy.giraffeMT.giraffeMT.services;
 
+import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
+
 import java.util.List;
 
 public interface BaseService<T,J> {
@@ -7,7 +9,7 @@ public interface BaseService<T,J> {
 
     T getById(Long id) throws Exception;
 
-    T create(J model);
+    T create(J model) throws NotFound;
 
     void delete(Long id) throws Exception;
 

@@ -38,9 +38,9 @@ public class SubcategoryController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody SubcategoryModel subcategoryModel) {
-        Subcategory subcategory = subcategoryService.create(subcategoryModel);
-        try {
-            return new ResponseEntity<>(subcategory, HttpStatus.CREATED);
+         try {Subcategory subcategory = subcategoryService.create(subcategoryModel);
+
+             return new ResponseEntity<>(subcategory, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

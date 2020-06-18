@@ -21,11 +21,6 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class ItemServiceImpl implements ItemService {
-    @Override
-    public Item create(BaseItemModel model) {
-        return null;
-    }
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -46,7 +41,12 @@ public class ItemServiceImpl implements ItemService {
         return user.orElse(null);
     }
 
-  //  @Override
+    @Override
+    public Item create(BaseItemModel model) {
+        return null;
+    }
+
+    //  @Override
     public Item createe(BaseItemModel model, String category, String subcategory) throws Exception {
         Subcategory subcategory1 = subcategoryService.getByName(subcategory);
         Category category1 = categoryService.getByName(category);
@@ -135,5 +135,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item update(Item entity) {
         return itemRepository.save(entity);
+    }
+
+    @Override
+    public List<Item> findAllByDescriptionContains(String description) {
+        return itemRepository.findAllByDescriptionContains(description);
     }
 }

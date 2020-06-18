@@ -13,4 +13,5 @@ public class UserModel {
     String fullName;
     String login;
     String password;
+    String requisite;
 }

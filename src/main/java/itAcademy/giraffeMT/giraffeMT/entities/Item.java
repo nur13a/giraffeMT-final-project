@@ -99,4 +99,6 @@ public class Item {
     String district;
     Double landArea;
     String gender;
+    @Column(name="cardPayment")
+    Boolean cardPayment;
 }

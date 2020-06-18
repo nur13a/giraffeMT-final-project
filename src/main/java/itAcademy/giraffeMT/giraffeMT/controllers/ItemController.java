@@ -24,10 +24,11 @@ public class ItemController {
         try {
             Item item = itemService.createe(itemModel, category, subcategory);
             return new ResponseEntity<>(item, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping
     public ResponseEntity getAll() {
         List<Item> items = itemService.getAll();
@@ -50,8 +51,8 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody BaseItemModel itemModel) {
-        Item item = itemService.create(itemModel);
         try {
+            Item item = itemService.create(itemModel);
             return new ResponseEntity<>(item, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -75,6 +76,16 @@ public class ItemController {
             return new ResponseEntity<>(item, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/search/{description}")
+    public ResponseEntity searchByDescription(@PathVariable("description") String description) {
+        try {
+            List<Item> items = itemService.findAllByDescriptionContains(description);
+            return new ResponseEntity<>(items, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }
