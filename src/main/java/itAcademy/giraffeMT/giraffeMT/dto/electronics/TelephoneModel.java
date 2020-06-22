@@ -1,6 +1,6 @@
-package itAcademy.giraffeMT.giraffeMT.models.electronics;
+package itAcademy.giraffeMT.giraffeMT.dto.electronics;
 
-import itAcademy.giraffeMT.giraffeMT.models.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

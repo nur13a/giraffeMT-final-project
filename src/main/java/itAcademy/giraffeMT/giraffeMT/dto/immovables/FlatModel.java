@@ -1,6 +1,6 @@
-package itAcademy.giraffeMT.giraffeMT.models.immovables;
+package itAcademy.giraffeMT.giraffeMT.dto.immovables;
 
-import itAcademy.giraffeMT.giraffeMT.models.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,10 +10,12 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class HouseModel extends BaseItemModel {
+public class FlatModel extends BaseItemModel {
     Double square;
-    Double landArea;
+    Integer floors;
     Integer roomNumber;
     Integer floorNumber;
     String district;
+
+    Long subcategory;
 }

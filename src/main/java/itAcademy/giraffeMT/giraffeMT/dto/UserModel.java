@@ -1,4 +1,4 @@
-package itAcademy.giraffeMT.giraffeMT.models;
+package itAcademy.giraffeMT.giraffeMT.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -1,5 +1,6 @@
-package itAcademy.giraffeMT.giraffeMT.models;
+package itAcademy.giraffeMT.giraffeMT.dto;
 
+import com.company.banksystem.enums.Currency;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,4 +17,5 @@ public  class BaseItemModel {
     String description;
     Long userId;
     String state;
+    Currency currency;
 }

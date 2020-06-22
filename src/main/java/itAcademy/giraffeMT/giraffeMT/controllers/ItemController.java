@@ -1,15 +1,16 @@
 package itAcademy.giraffeMT.giraffeMT.controllers;
 
-import itAcademy.giraffeMT.giraffeMT.entities.Category;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import itAcademy.giraffeMT.giraffeMT.entities.Item;
-import itAcademy.giraffeMT.giraffeMT.entities.Item;
-import itAcademy.giraffeMT.giraffeMT.models.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.ItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.transport.TransportModel;
 import itAcademy.giraffeMT.giraffeMT.services.ItemService;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -49,10 +50,11 @@ public class ItemController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity create(@RequestBody BaseItemModel itemModel) {
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity create(@RequestParam("item") String itemModel, @RequestParam("file") MultipartFile multipartFile) {
         try {
-            Item item = itemService.create(itemModel);
+            ItemModel object = new ObjectMapper().readValue(itemModel, ItemModel.class);
+            Item item = itemService.createWithPhoto(object, multipartFile);
             return new ResponseEntity<>(item, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -84,6 +86,16 @@ public class ItemController {
         try {
             List<Item> items = itemService.findAllByDescriptionContains(description);
             return new ResponseEntity<>(items, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/searchTransport")
+    public ResponseEntity getTransports(@RequestBody TransportModel transportModel) {
+        try {
+            List<Item> list = itemService.findAllByTransportModel(transportModel);
+            return new ResponseEntity<>(list, HttpStatus.FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

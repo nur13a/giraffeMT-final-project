@@ -1,6 +1,6 @@
-package itAcademy.giraffeMT.giraffeMT.models.transport;
+package itAcademy.giraffeMT.giraffeMT.dto.transport;
 
-import itAcademy.giraffeMT.giraffeMT.models.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class AutoModel extends BaseItemModel {
+public class TransportModel extends BaseItemModel {
     Double volume;
     String driveUnit;
     String bodyType;

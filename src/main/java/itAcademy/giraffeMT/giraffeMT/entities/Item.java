@@ -1,6 +1,8 @@
 package itAcademy.giraffeMT.giraffeMT.entities;
 
+import com.company.banksystem.enums.Currency;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import itAcademy.giraffeMT.giraffeMT.enums.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
@@ -99,6 +101,12 @@ public class Item {
     String district;
     Double landArea;
     String gender;
-    @Column(name="cardPayment")
-    Boolean cardPayment;
+    @Enumerated(EnumType.STRING)
+    @Column(name="status")
+    Status status;
+    @Column(name = "photoLink")
+    String photoLink;
+    @Enumerated(EnumType.STRING)
+    @Column(name="currency")
+    Currency currency;
 }

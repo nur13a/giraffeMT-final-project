@@ -1,7 +1,7 @@
 package itAcademy.giraffeMT.giraffeMT.services;
 import itAcademy.giraffeMT.giraffeMT.entities.User;
 import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
-import itAcademy.giraffeMT.giraffeMT.models.UserModel;
+import itAcademy.giraffeMT.giraffeMT.dto.UserModel;
 
 public interface UserService extends BaseService<User, UserModel> {
     User findByLogin(String login) throws NotFound;

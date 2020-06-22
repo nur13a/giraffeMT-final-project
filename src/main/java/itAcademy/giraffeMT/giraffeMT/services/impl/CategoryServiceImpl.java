@@ -2,6 +2,7 @@ package itAcademy.giraffeMT.giraffeMT.services.impl;
 
 import itAcademy.giraffeMT.giraffeMT.entities.Category;
 import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
+import itAcademy.giraffeMT.giraffeMT.dto.CategoryModel;
 import itAcademy.giraffeMT.giraffeMT.repositories.CategoryRepository;
 import itAcademy.giraffeMT.giraffeMT.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category create(Category model) {
+    public Category create(CategoryModel model) {
         return categoryRepository.save(Category.builder().name(model.getName()).build());
     }
 

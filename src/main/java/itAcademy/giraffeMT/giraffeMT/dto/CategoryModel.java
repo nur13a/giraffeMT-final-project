@@ -1,6 +1,5 @@
-package itAcademy.giraffeMT.giraffeMT.models;
+package itAcademy.giraffeMT.giraffeMT.dto;
 
-import itAcademy.giraffeMT.giraffeMT.entities.Category;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,8 +9,6 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class SubcategoryModel {
+public class CategoryModel {
     String name;
-    Category category;
 }
-

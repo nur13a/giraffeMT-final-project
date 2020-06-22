@@ -2,7 +2,7 @@ package itAcademy.giraffeMT.giraffeMT.services.impl;
 
 import itAcademy.giraffeMT.giraffeMT.entities.Subcategory;
 import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
-import itAcademy.giraffeMT.giraffeMT.models.SubcategoryModel;
+import itAcademy.giraffeMT.giraffeMT.dto.SubcategoryModel;
 import itAcademy.giraffeMT.giraffeMT.repositories.SubcategoryRepository;
 import itAcademy.giraffeMT.giraffeMT.services.SubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public Subcategory getById(Long id) throws Exception {
+    public Subcategory getById(Long id) {
         Optional<Subcategory> subcategory = subcategoryRepository.findById(id);
         return subcategory.orElse(null);
     }
