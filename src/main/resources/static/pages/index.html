@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="../index.js"></script>
+</head>
+<body>
+<div class="createItem">
+    <div class="main">
+        <form class="form" method="post" enctype="multipart/form-data" action="#">
+            <h2>Create item</h2>
+            <label>Description :</label>
+            <input type="text" name="idescription" id="description">
+            <label>price :</label>
+            <input type="number" name="iprice" id="price">
+            <label>userId :</label>
+            <input type="number" name="userId" id="user">
+            <label>state:</label>
+            <input type="text" name="istate" id="state">
+            <label>currency:</label>
+            <input type="text" name="icurrency" id="currency">
+
+            <input type="file" name="uploadedFileName" id="fileToUpload" required="" >
+            <button type="button" onclick="createItem()">
+                create item
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

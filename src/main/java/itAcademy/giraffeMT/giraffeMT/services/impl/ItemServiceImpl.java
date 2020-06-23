@@ -9,8 +9,6 @@ import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.ItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.immovables.FlatModel;
 import itAcademy.giraffeMT.giraffeMT.dto.transport.TransportModel;
-import itAcademy.giraffeMT.giraffeMT.dto.transport.Bicycle;
-import itAcademy.giraffeMT.giraffeMT.dto.transport.MotocycleModel;
 import itAcademy.giraffeMT.giraffeMT.repositories.ItemRepository;
 import itAcademy.giraffeMT.giraffeMT.services.ItemService;
 import itAcademy.giraffeMT.giraffeMT.services.UserService;
