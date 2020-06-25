@@ -4,6 +4,9 @@ import com.company.banksystem.enums.Currency;
 import itAcademy.giraffeMT.giraffeMT.entities.Category;
 import itAcademy.giraffeMT.giraffeMT.entities.Subcategory;
 import itAcademy.giraffeMT.giraffeMT.entities.User;
+import itAcademy.giraffeMT.giraffeMT.enums.Color;
+import itAcademy.giraffeMT.giraffeMT.enums.Gender;
+import itAcademy.giraffeMT.giraffeMT.enums.ItemState;
 import itAcademy.giraffeMT.giraffeMT.enums.Status;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +23,7 @@ import java.util.Date;
 public class ItemModel {
     BigDecimal price;
     String description;
-        String itemState;
+        ItemState itemState;
         String category;
     Currency currency;
     String subcategory;
@@ -32,7 +35,7 @@ public class ItemModel {
     String issueYear;
     Integer millage;
     String size;
-    String color;
+    Color color;
     String ssd;
     String memory;
     Integer numberCores;
@@ -43,7 +46,7 @@ public class ItemModel {
     Integer roomNumber;
     String district;
     Double landArea;
-    String gender;
+    Gender gender;
     Status status;
 }
 

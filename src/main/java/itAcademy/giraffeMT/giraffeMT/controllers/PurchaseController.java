@@ -37,8 +37,7 @@ public class PurchaseController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody PurchaseDto purchaseModel) {
-        try {Purchase purchase = purchaseService.create(purchaseModel);
-
+        try {PurchaseDto purchase = purchaseService.createByModel(purchaseModel);
             return new ResponseEntity<>(purchase, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

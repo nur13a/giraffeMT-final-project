@@ -1,15 +1,19 @@
 package itAcademy.giraffeMT.giraffeMT.dto.immovables;
 
+import com.company.banksystem.enums.Currency;
 import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.enums.ItemState;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
+
 public class FlatModel extends BaseItemModel {
     Double square;
     Integer floors;
@@ -17,5 +21,15 @@ public class FlatModel extends BaseItemModel {
     Integer floorNumber;
     String district;
 
-    Long subcategory;
+    @Builder
+    public FlatModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, Double square, Integer floors, Integer roomNumber, Integer floorNumber, String district) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+        this.square = square;
+        this.floors = floors;
+        this.roomNumber = roomNumber;
+        this.floorNumber = floorNumber;
+        this.district = district;
+    }
+
+
 }

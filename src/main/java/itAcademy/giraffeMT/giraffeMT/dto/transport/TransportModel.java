@@ -1,6 +1,7 @@
 package itAcademy.giraffeMT.giraffeMT.dto.transport;
 
 import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
+import itAcademy.giraffeMT.giraffeMT.enums.Color;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,7 +17,6 @@ public class TransportModel extends BaseItemModel {
     String bodyType;
     String issueYear;
     Integer millage;
-    Long subcategory;
     String color;
     String model;
 }

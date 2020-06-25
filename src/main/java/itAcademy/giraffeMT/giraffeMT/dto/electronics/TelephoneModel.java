@@ -13,5 +13,4 @@ import lombok.experimental.FieldDefaults;
 public class TelephoneModel extends BaseItemModel {
     String model;
     String color;
-    Double volume;
 }

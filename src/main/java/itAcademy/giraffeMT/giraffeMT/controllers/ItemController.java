@@ -19,16 +19,16 @@ import java.util.List;
 public class ItemController {
     @Autowired
     private ItemService itemService;
-
-    @PostMapping("/add/{category}/{subcategory}")
-    public ResponseEntity create(@RequestBody BaseItemModel itemModel, @PathVariable("category") String category, @PathVariable("subcategory") String subcategory) throws Exception {
-        try {
-            Item item = itemService.createe(itemModel, category, subcategory);
-            return new ResponseEntity<>(item, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+//
+//    @PostMapping("/add")
+//    public ResponseEntity create(@RequestBody BaseItemModel itemModel) throws Exception {
+//        try {
+//            Item item = itemService.createBase(itemModel);
+//            return new ResponseEntity<>(item, HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
     @GetMapping
     public ResponseEntity getAll() {
@@ -90,14 +90,34 @@ public class ItemController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/searchByCategory/{category}")
+    public ResponseEntity searchByCategory(@PathVariable("category") String category) {
+        try {
+            List<BaseItemModel> items = itemService.findByCategory(category);
+            return new ResponseEntity<>(items, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PostMapping("/searchTransport")
-    public ResponseEntity getTransports(@RequestBody TransportModel transportModel) {
+    public ResponseEntity getTransports(@RequestBody ItemModel transportModel) {
         try {
-            List<Item> list = itemService.findAllByTransportModel(transportModel);
+            List<ItemModel> list = itemService.searchTransport(transportModel);
             return new ResponseEntity<>(list, HttpStatus.FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+//    @GetMapping("/searchByColor/{color}")
+//    public ResponseEntity getTransport(@PathVariable("color") String color) {
+//
+//        try {
+//            List<TransportModel> list = itemService.getByColorTransport(color);
+//            return new ResponseEntity<>(list, HttpStatus.FOUND);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+//        }
+//    }
 }
