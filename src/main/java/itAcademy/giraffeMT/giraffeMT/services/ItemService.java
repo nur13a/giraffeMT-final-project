@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ItemService extends BaseService<Item, ItemModel> {
      Item createe(BaseItemModel model, String category, String subcategory) throws Exception ;
-     Item createWithPhoto(ItemModel itemModel, MultipartFile multipartFile) throws Exception;
+     BaseItemModel createWithPhoto(ItemModel itemModel, MultipartFile multipartFile) throws Exception;
 
     List<Item> findAllByDescriptionContains(String description);
     List<ItemModel>searchTransport(ItemModel transportModel);

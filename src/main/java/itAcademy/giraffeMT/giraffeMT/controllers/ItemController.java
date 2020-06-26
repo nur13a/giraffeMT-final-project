@@ -54,7 +54,7 @@ public class ItemController {
     public ResponseEntity create(@RequestParam("item") String itemModel, @RequestParam("file") MultipartFile multipartFile) {
         try {
             ItemModel object = new ObjectMapper().readValue(itemModel, ItemModel.class);
-            Item item = itemService.createWithPhoto(object, multipartFile);
+            BaseItemModel item = itemService.createWithPhoto(object, multipartFile);
             return new ResponseEntity<>(item, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

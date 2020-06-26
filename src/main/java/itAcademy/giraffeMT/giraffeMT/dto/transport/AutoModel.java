@@ -24,8 +24,8 @@ public class AutoModel extends BaseItemModel {
     String model;
 
     @Builder
-    public AutoModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, Double volume, String driveUnit, String bodyType, String issueYear, Integer millage, Color color, String model) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+    public AutoModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Double volume, String driveUnit, String bodyType, String issueYear, Integer millage, Color color, String model) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.volume = volume;
         this.driveUnit = driveUnit;
         this.bodyType = bodyType;

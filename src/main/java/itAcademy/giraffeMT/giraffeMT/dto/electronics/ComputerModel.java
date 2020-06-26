@@ -19,13 +19,14 @@ public class ComputerModel extends BaseItemModel {
     String memory;
     Integer numberCores;
     String cpu;
-
     @Builder
-    public ComputerModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String ssd, String memory, Integer numberCores, String cpu) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+    public ComputerModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, String ssd, String memory, Integer numberCores, String cpu) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.ssd = ssd;
         this.memory = memory;
         this.numberCores = numberCores;
         this.cpu = cpu;
     }
+
+
 }

@@ -22,14 +22,13 @@ public class FlatModel extends BaseItemModel {
     String district;
 
     @Builder
-    public FlatModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, Double square, Integer floors, Integer roomNumber, Integer floorNumber, String district) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+
+    public FlatModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Double square, Integer floors, Integer roomNumber, Integer floorNumber, String district) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.square = square;
         this.floors = floors;
         this.roomNumber = roomNumber;
         this.floorNumber = floorNumber;
         this.district = district;
     }
-
-
 }

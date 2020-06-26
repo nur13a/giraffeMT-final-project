@@ -57,98 +57,53 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item createBase(BaseItemModel model) throws NotFound {
-        Subcategory subcategory1 = subcategoryService.getByName(model.getSubcategory());
-        Category category1 = categoryService.getByName(model.getCategory());
+    public Item createe(BaseItemModel model, String category, String subcategory) throws Exception {
+        return null;
+    }
+
+    @Override
+    public BaseItemModel createWithPhoto(ItemModel model, MultipartFile multipartFile) throws NotFound, IOException {
+        Category category = categoryService.getByName(model.getCategory());
+        Subcategory subcategory = subcategoryService.getByName(model.getSubcategory());
         User user = userService.findByLogin(model.getUserLogin());
-        if (user != null && subcategory1 != null && category1 != null) {
-            switch (subcategory1.getName()) {
-                case "auto": {
-                    createAuto(model, user, category1, subcategory1);
-                }
-                case "bicycle": {
-                    BicycleModel bicycle = (BicycleModel) model;
-                    createBicycle(bicycle, user, category1, subcategory1);
-                }
-                case "motocycle": {
-                    model = new MotocycleModel();
-                    createMotocycle((MotocycleModel) model, user);
-                }
-                case "flat": {
-                    FlatModel flatModel = (FlatModel) model;
-                    createFlat(flatModel, user);
+        if (user != null && subcategory != null && category != null) {
+            Item item = Item.builder()
+                    .description(model.getDescription())
+                    .user(user)
+                    .price(model.getPrice())
+                    .currency(model.getCurrency())
+                    .photoLink(addImage(multipartFile))
+                    .subcategory(subcategory)
+                    .category(category)
+                    .itemState(model.getItemState())
+                    .build();
+            switch (category.getName()) {
+                case "Transport": {
+                    switch (subcategory.getName()) {
+                        case "auto": {
+                            return createAuto(model, item);
+                        }
+                        case "motocycle": {
+                            return createMotocycle(model, user, category, subcategory, multipartFile);
+                        }
+                        case "bicycle": {
+                            // return createBicycle();
+                        }
+                    }
                 }
             }
-        }
-        else if(user!=null&&category1==null&&subcategory1==null){
-            Item item=Item.builder().user(user)
+        } else if (user != null && category == null && subcategory == null) {
+            Item item = Item.builder().user(user)
                     .price(model.getPrice())
                     .description(model.getDescription())
                     .itemState(model.getItemState())
                     .currency(model.getCurrency()).build();
             itemRepository.save(item);
-
-            //return new BaseItemModel(item.getId(),item.getPrice(),item.getDescription(),item.getUser().getLogin(),item.getItemState(),item.getCurrency());
+            //return itemRepository.save(item);
         }
         return null;
     }
 
-    private Item createBicycle(BicycleModel bicycle, User user, Category category, Subcategory subcategory) {
-        Item item = Item.builder().price(bicycle.getPrice())
-                .color(bicycle.getColor())
-                .itemState(bicycle.getItemState())
-                .user(user)
-                .description(bicycle.getDescription())
-                // .currency(bicycle.getCurrency())
-                .category(category)
-                .subcategory(subcategory)
-                .gender(bicycle.getGender())
-                .description(bicycle.getDescription())
-                .build();
-        return itemRepository.save(item);
-    }
-
-    private Item createMotocycle(MotocycleModel motocycleModel, User user) {
-        Item item = Item.builder().description(motocycleModel.getDescription())
-
-                .user(user)
-                .price(motocycleModel.getPrice())
-                .model(motocycleModel.getModel())
-                .color(motocycleModel.getColor())
-                .volume(motocycleModel.getVolume())
-                .build();
-        return itemRepository.save(item);
-    }
-
-    @Override
-    public Item createWithPhoto(ItemModel model, MultipartFile multipartFile) throws NotFound, IOException {
-        Category category = categoryService.getByName(model.getCategory());
-        Subcategory subcategory = subcategoryService.getByName(model.getSubcategory());
-        User user = userService.findByLogin(model.getUserLogin());
-        Item item = Item.builder().memory(model.getMemory())
-                .category(category)
-                .cpu(model.getCpu())
-                .ssd(model.getSsd())
-                .address(model.getAddress())
-                .gender(model.getGender())
-                .color(model.getColor())
-                .description(model.getDescription())
-                .square(model.getSquare())
-                .price(model.getPrice())
-                .user(user)
-                .subcategory(subcategory)
-                .itemState(model.getItemState())
-                .photoLink(addImage(multipartFile))
-                .volume(model.getVolume())
-                .model(model.getModel())
-                .currency(model.getCurrency())
-                .driveUnit(model.getDriveUnit())
-                .numberCores(model.getNumberCores())
-                .bodyType(model.getBodyType())
-                .millage(model.getMillage()).build();
-
-        return itemRepository.save(item);
-    }
 
     private String addImage(MultipartFile file) throws IOException {
         byte[] bytes = file.getBytes();
@@ -159,29 +114,93 @@ public class ItemServiceImpl implements ItemService {
         return modifiedFileName;
     }
 
-    //  @Override
-    public Item createe(BaseItemModel model, String category, String subcategory) throws Exception {
-        return new Item();
+
+    private AutoModel createAuto(ItemModel it, Item item) throws IOException {
+        item.setBodyType(it.getBodyType());
+        item.setModel(it.getModel());
+        item.setColor(it.getColor());
+        item.setDriveUnit(it.getDriveUnit());
+        item.setIssueYear(it.getIssueYear());
+        item.setMillage(it.getMillage());
+        item.setVolume(it.getVolume());
+        itemRepository.save(item);
+        AutoModel autoModel = AutoModel.builder().
+                id(item.getId()).bodyType(item.getBodyType())
+                .model(item.getModel())
+                .color(item.getColor())
+                .description(item.getDescription())
+                .driveUnit(item.getDriveUnit())
+                .currency(item.getCurrency())
+                .issueYear(item.getIssueYear())
+                .millage(item.getMillage())
+                .price(item.getPrice())
+                .volume(item.getVolume())
+                .itemState(item.getItemState())
+                .category(item.getCategory().getName())
+                .userLogin(item.getUser().getLogin())
+                .subcategory(item.getSubcategory().getName())
+                .photoLink(item.getPhotoLink())
+                .build();
+        return autoModel;
     }
 
-
-    private Item createAuto(BaseItemModel itemModel, User user, Category category, Subcategory subcategory) {
-      //  itemModel = new AutoModel();
-        Item item = Item.builder().
-                category(category)
-                .subcategory(subcategory)
-                .currency(itemModel.getCurrency())
-                .itemState(itemModel.getItemState())
-                .bodyType(((AutoModel) itemModel).getBodyType())
-                .description(itemModel.getDescription())
-                .driveUnit(((AutoModel) itemModel).getDriveUnit())
-                .issueYear(((AutoModel) itemModel).getIssueYear())
-                .millage(((AutoModel) itemModel).getMillage())
-                .model(((AutoModel) itemModel).getModel())
-                .price(itemModel.getPrice())
+    private BicycleModel createBicycle(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
                 .user(user)
+                .price(it.getPrice())
+                .gender(it.getGender())
+                .color(it.getColor())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
                 .build();
-        return itemRepository.save(item);
+        itemRepository.save(item);
+        BicycleModel model = BicycleModel.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .color(item.getColor())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId()).build();
+        return model;
+    }
+
+    private MotocycleModel createMotocycle(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .model(it.getModel())
+                .color(it.getColor())
+                .volume(it.getVolume())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .build();
+        itemRepository.save(item);
+        MotocycleModel model = MotocycleModel.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .model(item.getModel())
+                .color(item.getColor())
+                .volume(item.getVolume())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId()).build();
+        return model;
     }
 
     @Override
@@ -191,6 +210,11 @@ public class ItemServiceImpl implements ItemService {
                 transportModel.getDescription(), transportModel.getDriveUnit(), transportModel.getIssueYear(), transportModel.getMillage(),
                 transportModel.getModel(), transportModel.getPrice(), transportModel.getVolume(), transportModel.getItemState());
         return list;*/
+        return null;
+    }
+
+    @Override
+    public Item createBase(BaseItemModel model) throws NotFound {
         return null;
     }
 

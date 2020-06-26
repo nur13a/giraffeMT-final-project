@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -22,13 +22,17 @@ public  class BaseItemModel {
     Currency currency;
     String category;
     String subcategory;
+    String photoLink;
 
-    public BaseItemModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency) {
+    public BaseItemModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink) {
         this.id = id;
         this.price = price;
         this.description = description;
         this.userLogin = userLogin;
         this.itemState = itemState;
         this.currency = currency;
+        this.category = category;
+        this.subcategory = subcategory;
+        this.photoLink = photoLink;
     }
 }

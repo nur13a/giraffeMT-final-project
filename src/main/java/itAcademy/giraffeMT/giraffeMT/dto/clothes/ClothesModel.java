@@ -17,11 +17,12 @@ import java.math.BigDecimal;
 public class ClothesModel extends BaseItemModel {
     String size;
     Color color;
-
-    @Builder
-    public ClothesModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String size, Color color) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+@Builder
+    public ClothesModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, String size, Color color) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.size = size;
         this.color = color;
     }
+
+
 }

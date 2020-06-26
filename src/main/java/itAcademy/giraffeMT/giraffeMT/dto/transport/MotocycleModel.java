@@ -19,10 +19,9 @@ public class MotocycleModel extends BaseItemModel {
     Double volume;
     Color color;
     String model;
-
-    @Builder
-    public MotocycleModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, Double volume, Color color, String model) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+@Builder
+    public MotocycleModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Double volume, Color color, String model) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.volume = volume;
         this.color = color;
         this.model = model;

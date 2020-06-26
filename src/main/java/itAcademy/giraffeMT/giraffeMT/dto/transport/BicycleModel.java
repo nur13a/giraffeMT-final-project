@@ -21,8 +21,8 @@ public class BicycleModel extends BaseItemModel {
     Gender gender;
 
     @Builder
-    public BicycleModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, Color color, Gender gender) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory);
+    public BicycleModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Color color, Gender gender) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink);
         this.color = color;
         this.gender = gender;
     }
