@@ -11,18 +11,20 @@ import javax.persistence.*;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "itemDynamicColumn")
-public class ItemDynamicColumn {
+@Table(name = "additionalColumn")
+public class AdditionalColumn {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "column_name")
+    @Column(name = "columnName",unique = true,nullable = false)
     String columnName;
 
     @Column(name = "info")
     String inf0;
-
     @Column(name = "category")
-    String category;
+    Category category;
+    @Column(name = "subcategory")
+    Subcategory subcategory;
+
 }

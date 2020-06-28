@@ -2,11 +2,9 @@ package itAcademy.giraffeMT.giraffeMT.entities;
 
 import com.company.banksystem.enums.Currency;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import itAcademy.giraffeMT.giraffeMT.dto.AdditionalColumnDtoResponse;
 import itAcademy.giraffeMT.giraffeMT.dto.transport.AutoModel;
-import itAcademy.giraffeMT.giraffeMT.enums.Color;
-import itAcademy.giraffeMT.giraffeMT.enums.Gender;
-import itAcademy.giraffeMT.giraffeMT.enums.ItemState;
-import itAcademy.giraffeMT.giraffeMT.enums.Status;
+import itAcademy.giraffeMT.giraffeMT.enums.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +12,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -53,11 +52,14 @@ public class Item {
     @Column(name = "photoLink")
     String photoLink;
     @Enumerated(EnumType.STRING)
-    @Column(name="currency")
+    @Column(name = "currency")
     Currency currency;
     @Enumerated(EnumType.STRING)
-    @Column(name="status")
+    @Column(name = "status")
     Status status;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="additionalColumns", referencedColumnName = "id")
+    List<AdditionalColumnDtoResponse> additionalColumn;
 
 
     @Column(name = "volume")
@@ -78,7 +80,8 @@ public class Item {
     @Enumerated(EnumType.STRING)
     @Column(name = "color")
     Color color;
-    @Column(name="gender")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
     Gender gender;
 
     @Column(name = "ssd")
@@ -95,12 +98,17 @@ public class Item {
     @Column(name = "square")
     Double square;
     @Column(name = "floors")
-    Integer floors;
+    Integer floor;
     @Column(name = "roomNumber")
     Integer roomNumber;
     @Column(name = "district")
     String district;
-    @Column(name="floorNumber")
-    Integer floorNumber;
+    @Column(name = "floorNumber")
+    Integer floorsNumber;
+    @Column(name = "landArea")
+    Double landArea;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "buildingType")
+    BuildingType buildingType;
 
 }

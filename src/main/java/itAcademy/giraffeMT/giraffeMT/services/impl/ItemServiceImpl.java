@@ -1,18 +1,21 @@
 package itAcademy.giraffeMT.giraffeMT.services.impl;
 
-import itAcademy.giraffeMT.giraffeMT.dto.clothes.ClothesModel;
-import itAcademy.giraffeMT.giraffeMT.dto.electronics.ComputerModel;
+import itAcademy.giraffeMT.giraffeMT.dto.clothes.ClothesDto;
+import itAcademy.giraffeMT.giraffeMT.dto.electronics.ComputerDto;
+import itAcademy.giraffeMT.giraffeMT.dto.electronics.ElectronicDto;
+import itAcademy.giraffeMT.giraffeMT.dto.electronics.PhoneDto;
+import itAcademy.giraffeMT.giraffeMT.dto.immovables.HouseDto;
+import itAcademy.giraffeMT.giraffeMT.dto.immovables.ImmovablesDto;
 import itAcademy.giraffeMT.giraffeMT.dto.transport.AutoModel;
 import itAcademy.giraffeMT.giraffeMT.dto.transport.BicycleModel;
 import itAcademy.giraffeMT.giraffeMT.dto.transport.MotocycleModel;
-import itAcademy.giraffeMT.giraffeMT.entities.Category;
-import itAcademy.giraffeMT.giraffeMT.entities.Item;
-import itAcademy.giraffeMT.giraffeMT.entities.Subcategory;
-import itAcademy.giraffeMT.giraffeMT.entities.User;
+import itAcademy.giraffeMT.giraffeMT.dto.transport.TransportModel;
+import itAcademy.giraffeMT.giraffeMT.entities.*;
+import itAcademy.giraffeMT.giraffeMT.enums.Status;
 import itAcademy.giraffeMT.giraffeMT.exceptions.NotFound;
 import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.ItemModel;
-import itAcademy.giraffeMT.giraffeMT.dto.immovables.FlatModel;
+import itAcademy.giraffeMT.giraffeMT.dto.immovables.FlatDto;
 import itAcademy.giraffeMT.giraffeMT.repositories.ItemRepository;
 import itAcademy.giraffeMT.giraffeMT.services.ItemService;
 import itAcademy.giraffeMT.giraffeMT.services.UserService;
@@ -57,49 +60,57 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item createe(BaseItemModel model, String category, String subcategory) throws Exception {
-        return null;
-    }
-
-    @Override
     public BaseItemModel createWithPhoto(ItemModel model, MultipartFile multipartFile) throws NotFound, IOException {
         Category category = categoryService.getByName(model.getCategory());
         Subcategory subcategory = subcategoryService.getByName(model.getSubcategory());
         User user = userService.findByLogin(model.getUserLogin());
-        if (user != null && subcategory != null && category != null) {
-            Item item = Item.builder()
-                    .description(model.getDescription())
-                    .user(user)
-                    .price(model.getPrice())
-                    .currency(model.getCurrency())
-                    .photoLink(addImage(multipartFile))
-                    .subcategory(subcategory)
-                    .category(category)
-                    .itemState(model.getItemState())
-                    .build();
+        if (user != null && category != null || subcategory != null) {
             switch (category.getName()) {
-                case "Transport": {
+                case "transport": {
                     switch (subcategory.getName()) {
-                        case "auto": {
-                            return createAuto(model, item);
-                        }
-                        case "motocycle": {
+                        case "auto":
+                            return createAuto(model, user, category, subcategory, multipartFile);
+                        case "motocycle":
                             return createMotocycle(model, user, category, subcategory, multipartFile);
-                        }
-                        case "bicycle": {
-                            // return createBicycle();
-                        }
+                        case "bicycle":
+                            return createBicycle(model, user, category, subcategory, multipartFile);
                     }
                 }
+                case "immovables": {
+                    switch (subcategory.getName()) {
+                        case "flat":
+                            return createFlat(model, user, category, subcategory, multipartFile);
+                        case "house":
+                            return createHouse(model, user, category, subcategory, multipartFile);
+                    }
+                }
+                case "electronics": {
+                    switch (subcategory.getName()) {
+                        case "phone":
+                            return createPhone(model, user, category, subcategory, multipartFile);
+                        case "computer":
+                            return createComputer(model, user, category, subcategory, multipartFile);
+                    }
+                }
+                case "clothes": {
+                    return createClothes(model, user, category, subcategory, multipartFile);
+                }
+                default:
+                    return createByDefault(model, user, category, subcategory, multipartFile);
             }
-        } else if (user != null && category == null && subcategory == null) {
-            Item item = Item.builder().user(user)
+
+        } else if (user != null) {
+            Item item =Item.builder().user(user)
                     .price(model.getPrice())
                     .description(model.getDescription())
                     .itemState(model.getItemState())
-                    .currency(model.getCurrency()).build();
+                    .currency(model.getCurrency())
+                    .status(Status.ACTIVE)
+                    .photoLink(addImage(multipartFile))
+                    .additionalColumn(model.getAdditionalColumn())
+                    .build();
             itemRepository.save(item);
-            //return itemRepository.save(item);
+            return createByDefault(model, user, null, null, multipartFile);
         }
         return null;
     }
@@ -115,14 +126,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
-    private AutoModel createAuto(ItemModel it, Item item) throws IOException {
-        item.setBodyType(it.getBodyType());
-        item.setModel(it.getModel());
-        item.setColor(it.getColor());
-        item.setDriveUnit(it.getDriveUnit());
-        item.setIssueYear(it.getIssueYear());
-        item.setMillage(it.getMillage());
-        item.setVolume(it.getVolume());
+    private AutoModel createAuto(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+
+        Item item = Item.builder().
+                category(category)
+                .subcategory(subcategory)
+                .bodyType(it.getBodyType())
+                .model(it.getModel())
+                .color(it.getColor())
+                .description(it.getDescription())
+                .driveUnit(it.getDriveUnit())
+                .currency(it.getCurrency())
+                .issueYear(it.getIssueYear())
+                .millage(it.getMillage())
+                .price(it.getPrice())
+                .volume(it.getVolume())
+                .itemState(it.getItemState())
+                .user(user)
+                .photoLink(addImage(photo))
+                .status(Status.ACTIVE)
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
         itemRepository.save(item);
         AutoModel autoModel = AutoModel.builder().
                 id(item.getId()).bodyType(item.getBodyType())
@@ -140,6 +164,8 @@ public class ItemServiceImpl implements ItemService {
                 .userLogin(item.getUser().getLogin())
                 .subcategory(item.getSubcategory().getName())
                 .photoLink(item.getPhotoLink())
+                .status(item.getStatus())
+                .additionalList(item.getAdditionalColumn())
                 .build();
         return autoModel;
     }
@@ -156,6 +182,8 @@ public class ItemServiceImpl implements ItemService {
                 .subcategory(subcategory)
                 .category(category)
                 .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .additionalColumn(it.getAdditionalColumn())
                 .build();
         itemRepository.save(item);
         BicycleModel model = BicycleModel.builder()
@@ -163,11 +191,14 @@ public class ItemServiceImpl implements ItemService {
                 .userLogin(item.getUser().getLogin())
                 .price(item.getPrice())
                 .color(item.getColor())
+                .gender(item.getGender())
                 .currency(item.getCurrency())
                 .photoLink(addImage(photo))
                 .subcategory(item.getSubcategory().getName())
                 .category(item.getCategory().getName())
                 .itemState(item.getItemState())
+                .status(item.getStatus())
+                .additionalList(item.getAdditionalColumn())
                 .id(item.getId()).build();
         return model;
     }
@@ -185,6 +216,8 @@ public class ItemServiceImpl implements ItemService {
                 .subcategory(subcategory)
                 .category(category)
                 .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .additionalColumn(it.getAdditionalColumn())
                 .build();
         itemRepository.save(item);
         MotocycleModel model = MotocycleModel.builder()
@@ -199,37 +232,238 @@ public class ItemServiceImpl implements ItemService {
                 .subcategory(item.getSubcategory().getName())
                 .category(item.getCategory().getName())
                 .itemState(item.getItemState())
+                .status(item.getStatus())
+                .additionalList(item.getAdditionalColumn())
                 .id(item.getId()).build();
         return model;
     }
 
-    @Override
-    public List<ItemModel> searchTransport(ItemModel transportModel) {
-       /* List<ItemModel> list = itemRepository.getTransports(
-                transportModel.getBodyType(), transportModel.getColor(), transportModel.getCurrency(),
-                transportModel.getDescription(), transportModel.getDriveUnit(), transportModel.getIssueYear(), transportModel.getMillage(),
-                transportModel.getModel(), transportModel.getPrice(), transportModel.getVolume(), transportModel.getItemState());
-        return list;*/
-        return null;
-    }
-
-    @Override
-    public Item createBase(BaseItemModel model) throws NotFound {
-        return null;
-    }
-
-
-    private Item createFlat(FlatModel flat, User user) {
-        Item item = Item.builder().description(flat.getDescription())
-                .square(flat.getSquare())
-                .floors(flat.getFloors())
-                .roomNumber(flat.getRoomNumber())
-                .district(flat.getDistrict())
-                .price(flat.getPrice())
+    private FlatDto createFlat(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
                 .user(user)
-                .itemState(flat.getItemState())
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .district(it.getDistrict())
+                .floor(it.getFloor())
+                .roomNumber(it.getRoomNumber())
+                .square(it.getSquare())
+                .address(it.getAddress())
+                .floorsNumber(it.getFloorsNumber())
+                .buildingType(it.getBuildingType())
+                .status(Status.ACTIVE)
+                .additionalColumn(it.getAdditionalColumn())
                 .build();
-        return itemRepository.save(item);
+        itemRepository.save(item);
+        FlatDto model = FlatDto.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId())
+                .status(item.getStatus())
+                .floor(item.getFloor())
+                .roomNumber(item.getRoomNumber())
+                .district(item.getDistrict())
+                .floorsNumber(item.getFloorsNumber())
+                .square(item.getSquare())
+                .buildingType(item.getBuildingType())
+                .additionalList(item.getAdditionalColumn())
+                .build();
+        return model;
+    }
+
+    private HouseDto createHouse(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .district(it.getDistrict())
+                .roomNumber(it.getRoomNumber())
+                .square(it.getSquare())
+                .address(it.getAddress())
+                .floorsNumber(it.getFloorsNumber())
+                .buildingType(it.getBuildingType())
+                .address(it.getAddress())
+                .landArea(it.getLandArea())
+                .status(Status.ACTIVE)
+                .buildingType(it.getBuildingType())
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
+        itemRepository.save(item);
+        HouseDto model = HouseDto.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId())
+                .status(item.getStatus())
+                .roomNumber(item.getRoomNumber())
+                .district(item.getDistrict())
+                .floorsNumber(item.getFloorsNumber())
+                .landArea(item.getLandArea())
+                .square(item.getSquare())
+                .additionalList(item.getAdditionalColumn())
+                .buildingType(item.getBuildingType()).build();
+        return model;
+    }
+
+    private PhoneDto createPhone(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .color(it.getColor())
+                .memory(it.getMemory())
+                .model(it.getModel())
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
+        itemRepository.save(item);
+        PhoneDto model = PhoneDto.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId())
+                .status(item.getStatus())
+                .color(item.getColor())
+                .memory(item.getMemory())
+                .model(item.getModel())
+                .additionalList(item.getAdditionalColumn())
+                .build();
+        return model;
+    }
+
+    private ComputerDto createComputer(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .cpu(it.getCpu())
+                .numberCores(it.getNumberCores())
+                .ssd(it.getSsd())
+                .memory(it.getMemory())
+                .model(it.getModel())
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
+        itemRepository.save(item);
+        ComputerDto model = ComputerDto.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId())
+                .status(item.getStatus())
+                .memory(item.getMemory())
+                .model(item.getModel())
+                .cpu(item.getCpu())
+                .numberCores(item.getNumberCores())
+                .ssd(item.getSsd())
+                .additionalList(item.getAdditionalColumn())
+                .build();
+        return model;
+    }
+
+    private ClothesDto createClothes(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .color(it.getColor())
+                .gender(it.getGender())
+                .size(it.getSize())
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
+        itemRepository.save(item);
+        ClothesDto model = ClothesDto.builder()
+                .description(item.getDescription())
+                .userLogin(item.getUser().getLogin())
+                .price(item.getPrice())
+                .currency(item.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(item.getSubcategory().getName())
+                .category(item.getCategory().getName())
+                .itemState(item.getItemState())
+                .id(item.getId())
+                .status(item.getStatus())
+                .color(item.getColor())
+                .gender(item.getGender())
+                .size(item.getSize())
+                .additionalList(item.getAdditionalColumn())
+                .build();
+        return model;
+    }
+
+    private BaseItemModel createByDefault(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        Item item = Item.builder()
+                .description(it.getDescription())
+                .user(user)
+                .price(it.getPrice())
+                .currency(it.getCurrency())
+                .photoLink(addImage(photo))
+                .subcategory(subcategory)
+                .category(category)
+                .itemState(it.getItemState())
+                .status(Status.ACTIVE)
+                .additionalColumn(it.getAdditionalColumn())
+                .build();
+        itemRepository.save(item);
+        BaseItemModel model = new BaseItemModel();
+        model.setDescription(item.getDescription());
+        model.setUserLogin(item.getUser().getLogin());
+        model.setPrice(item.getPrice());
+        model.setCurrency(item.getCurrency());
+        model.setPhotoLink(addImage(photo));
+        model.setSubcategory(item.getSubcategory().getName());
+        model.setCategory(item.getCategory().getName());
+        model.setItemState(item.getItemState());
+        model.setId(item.getId());
+        model.setStatus(item.getStatus());
+        model.setColumns(item.getAdditionalColumn());
+        return model;
     }
 
     @Override
@@ -251,6 +485,119 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<TransportModel> searchTransport(TransportModel transportModel) {
+        List<Item> list = itemRepository.getTransports(
+                transportModel.getBodyType(), transportModel.getColor(), transportModel.getCurrency(),
+                transportModel.getDescription(), transportModel.getDriveUnit(), transportModel.getIssueYear(), transportModel.getMillage(),
+                transportModel.getModel(), transportModel.getPrice(), transportModel.getVolume(), transportModel.getItemState(), transportModel.getGender());
+        List<TransportModel> models = new ArrayList<>();
+        for (Item i : list
+        ) {
+            models.add(TransportModel.builder().id(i.getId())
+                    .price(i.getPrice())
+                    .millage(i.getMillage())
+                    .volume(i.getVolume())
+                    .bodyType(i.getBodyType())
+                    .itemState(i.getItemState())
+                    .color(i.getColor())
+                    .driveUnit(i.getDriveUnit())
+                    .issueYear(i.getIssueYear())
+                    .model(i.getModel())
+                    .category(i.getCategory().getName())
+                    .currency(i.getCurrency())
+                    .description(i.getDescription())
+                    .gender(i.getGender())
+                    .photoLink(i.getPhotoLink())
+                    .status(i.getStatus())
+                    .subcategory(i.getSubcategory().getName())
+                    .userLogin(i.getUser().getLogin()).build());
+        }
+        return models;
+
+    }
+
+    @Override
+    public List<ElectronicDto> searchElectronics(ElectronicDto electronicDto) {
+        List<Item> list = itemRepository.getElectronics(electronicDto.getSsd(), electronicDto.getModel(), electronicDto.getCpu(), electronicDto.getMemory(), electronicDto.getColor(), electronicDto.getItemState(), electronicDto.getNumberCores(), electronicDto.getPrice());
+        List<ElectronicDto> models = new ArrayList<>();
+        for (Item i : list
+        ) {
+            models.add(ElectronicDto.builder()
+                    .id(i.getId())
+                    .price(i.getPrice())
+                    .itemState(i.getItemState())
+                    .color(i.getColor())
+                    .model(i.getModel())
+                    .category(i.getCategory().getName())
+                    .currency(i.getCurrency())
+                    .description(i.getDescription())
+                    .photoLink(i.getPhotoLink())
+                    .status(i.getStatus())
+                    .subcategory(i.getSubcategory().getName())
+                    .userLogin(i.getUser().getLogin())
+                    .cpu(i.getCpu())
+                    .memory(i.getMemory())
+                    .numberCores(i.getNumberCores())
+                    .ssd(i.getSsd()).build());
+        }
+        return models;
+    }
+
+    @Override
+    public List<ClothesDto> searchClothes(ClothesDto clothesDto) {
+        List<Item> list = itemRepository.getClothes(clothesDto.getSize(), clothesDto.getColor(), clothesDto.getGender(), clothesDto.getPrice(), clothesDto.getItemState());
+        List<ClothesDto> models = new ArrayList<>();
+        for (Item i : list) {
+            models.add(ClothesDto.builder()
+                    .id(i.getId())
+                    .price(i.getPrice())
+                    .itemState(i.getItemState())
+                    .color(i.getColor())
+                    .category(i.getCategory().getName())
+                    .currency(i.getCurrency())
+                    .description(i.getDescription())
+                    .photoLink(i.getPhotoLink())
+                    .status(i.getStatus())
+                    .subcategory(i.getSubcategory().getName())
+                    .userLogin(i.getUser().getLogin())
+                    .size(i.getSize())
+                    .gender(i.getGender())
+                    .build());
+        }
+        return models;
+    }
+
+    @Override
+    public List<ImmovablesDto> searchImmovables(ImmovablesDto immovablesDto) {
+        List<Item> list = itemRepository.getImmovables(immovablesDto.getAddress(), immovablesDto.getBuildingType(), immovablesDto.getDistrict(), immovablesDto.getSquare(), immovablesDto.getRoomNumber(),
+                immovablesDto.getLandArea(), immovablesDto.getFloorsNumber(), immovablesDto.getCurrency(), immovablesDto.getPrice(), immovablesDto.getFloor());
+        List<ImmovablesDto> models = new ArrayList<>();
+        for (Item i : list) {
+            models.add(ImmovablesDto.builder()
+                    .id(i.getId())
+                    .price(i.getPrice())
+                    .itemState(i.getItemState())
+                    .category(i.getCategory().getName())
+                    .currency(i.getCurrency())
+                    .description(i.getDescription())
+                    .photoLink(i.getPhotoLink())
+                    .status(i.getStatus())
+                    .subcategory(i.getSubcategory().getName())
+                    .userLogin(i.getUser().getLogin())
+                    .address(i.getAddress())
+                    .buildingType(i.getBuildingType())
+                    .district(i.getDistrict())
+                    .floor(i.getFloor())
+                    .floorsNumber(i.getFloorsNumber())
+                    .landArea(i.getLandArea())
+                    .roomNumber(i.getRoomNumber())
+                    .square(i.getSquare())
+                    .build());
+        }
+        return models;
+    }
+
+    @Override
     public List<BaseItemModel> findByCategory(String category) {
         List<BaseItemModel> categoryItems = new ArrayList<>();
         List<Item> itemList = itemRepository.findAllByCategory_Name(category);
@@ -258,68 +605,66 @@ public class ItemServiceImpl implements ItemService {
         for (Item item : itemList
         ) {
             if (category1 != null) {
-                switch (category1.getName()) {
-                    case "transport": {
-                        categoryItems.add(AutoModel.builder()
-                                .bodyType(item.getBodyType())
-                                .price(item.getPrice())
-                                .currency(item.getCurrency())
-                                .description(item.getDescription())
-                                .itemState(item.getItemState())
-                                .userLogin(item.getUser().getLogin())
-                                .category(category)
-                                .color(item.getColor())
-                                .driveUnit(item.getDriveUnit())
-                                .issueYear(item.getIssueYear())
-                                .millage(item.getMillage())
-                                .model(item.getModel())
-                                .volume(item.getVolume())
-                                .subcategory(item.getSubcategory().getName())
-                                .build());
-                    }
-
-                    case "immovables": {
-                        categoryItems.add(FlatModel.builder().price(item.getPrice())
-                                .currency(item.getCurrency())
-                                .description(item.getDescription())
-                                .itemState(item.getItemState())
-                                .userLogin(item.getUser().getLogin())
-                                .category(category).subcategory(item.getSubcategory().getName())
-                                .square(item.getSquare())
-                                .district(item.getDistrict())
-                                .floorNumber(item.getFloors())
-                                .roomNumber(item.getRoomNumber())
-                                .floors(item.getFloors())
-                                .id(item.getId()).build());
-                    }
-                    case "electronics": {
-                        categoryItems.add(ComputerModel.builder().price(item.getPrice())
-                                .currency(item.getCurrency())
-                                .description(item.getDescription())
-                                .itemState(item.getItemState())
-                                .userLogin(item.getUser().getLogin())
-                                .category(category)
-                                .subcategory(item.getSubcategory().getName())
-                                .cpu(item.getCpu())
-                                .memory(item.getMemory())
-                                .numberCores(item.getNumberCores())
-                                .ssd(item.getSsd())
-                                .id(item.getId()).build());
-                    }
-                    case "clothes": {
-                        categoryItems.add(ClothesModel.builder().price(item.getPrice())
-                                .currency(item.getCurrency())
-                                .description(item.getDescription())
-                                .itemState(item.getItemState())
-                                .userLogin(item.getUser().getLogin())
-                                .category(category)
-                                .subcategory(item.getSubcategory().getName())
-                                .size(item.getSize())
-                                .color(item.getColor()).build());
-                    }
+                if (category1.getName().equals("transport")) {
+                    categoryItems.add(AutoModel.builder()
+                            .id(item.getId())
+                            .bodyType(item.getBodyType())
+                            .price(item.getPrice())
+                            .currency(item.getCurrency())
+                            .description(item.getDescription())
+                            .itemState(item.getItemState())
+                            .userLogin(item.getUser().getLogin())
+                            .category(category)
+                            .color(item.getColor())
+                            .driveUnit(item.getDriveUnit())
+                            .issueYear(item.getIssueYear())
+                            .millage(item.getMillage())
+                            .model(item.getModel())
+                            .volume(item.getVolume())
+                            .subcategory(item.getSubcategory().getName())
+                            .status(item.getStatus())
+                            .photoLink(item.getPhotoLink())
+                            .build());
+                } else if (category1.getName().equals("immovables")) {
+                    categoryItems.add(FlatDto.builder().price(item.getPrice())
+                            .currency(item.getCurrency())
+                            .description(item.getDescription())
+                            .itemState(item.getItemState())
+                            .userLogin(item.getUser().getLogin())
+                            .category(category).subcategory(item.getSubcategory().getName())
+                            .square(item.getSquare())
+                            .district(item.getDistrict())
+                            .floorsNumber(item.getFloorsNumber())
+                            .roomNumber(item.getRoomNumber())
+                            .floor(item.getFloor())
+                            .id(item.getId()).build());
+                } else if (category1.getName().equals("electronics")) {
+                    categoryItems.add(ComputerDto.builder().price(item.getPrice())
+                            .currency(item.getCurrency())
+                            .description(item.getDescription())
+                            .itemState(item.getItemState())
+                            .userLogin(item.getUser().getLogin())
+                            .category(category)
+                            .subcategory(item.getSubcategory().getName())
+                            .cpu(item.getCpu())
+                            .memory(item.getMemory())
+                            .numberCores(item.getNumberCores())
+                            .ssd(item.getSsd())
+                            .id(item.getId()).build());
+                } else if (category1.getName().equals("clothes")) {
+                    categoryItems.add(ClothesDto.builder().price(item.getPrice())
+                            .currency(item.getCurrency())
+                            .description(item.getDescription())
+                            .itemState(item.getItemState())
+                            .userLogin(item.getUser().getLogin())
+                            .category(category)
+                            .subcategory(item.getSubcategory().getName())
+                            .size(item.getSize())
+                            .color(item.getColor()).build());
                 }
             }
         }
+
         return categoryItems;
     }
 }

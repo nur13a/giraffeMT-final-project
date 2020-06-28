@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class PurchaseDto {
+    Long id;
     String userFrom;
     Long itemId;
     String userTo;

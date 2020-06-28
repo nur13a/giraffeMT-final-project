@@ -9,7 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CategoryModel {
+public class ItemDynamicColumnDto {
     Long id;
-    String name;
+    String info;
+    String columnName;
 }

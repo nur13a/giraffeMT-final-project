@@ -60,7 +60,8 @@ public class PurchaseServiceImpl implements PurchaseService {
             Item item = itemService.getById(model.getItemId());
             Purchase purchase = Purchase.builder().userFrom(userFrom)
                     .item(item)
-                    .userTo(userTo).build();
+                    .userTo(userTo)
+                    .paymentType(model.getPaymentType()).build();
             if (model.getPaymentType().equals(PaymentType.BANK_ACCOUNT)) {
                 BankAccount accountTo = userTo.getBankAccount();
                 BankAccount accountFrom = userFrom.getBankAccount();
@@ -69,28 +70,23 @@ public class PurchaseServiceImpl implements PurchaseService {
                         .amount(item.getPrice())
                         .currency(item.getCurrency()).build();
                 Transaction transaction1 = transactionService.create(transaction);
-                  if (transaction1.getStatus().equals(TransactionStatus.OK)) {
-                itemService.update(item);
-                purchaseRepository.save(purchase);
-                  }
+                if (transaction1.getStatus().equals(TransactionStatus.OK)) {
+                    itemService.update(item);
+                    purchaseRepository.save(purchase);
+                }
             } else if(model.getPaymentType().equals(PaymentType.IN_CASH)){
                 item.setStatus(Status.SALES);
                 itemService.update(item);
                 purchaseRepository.save(purchase);
             }
-            return  PurchaseDto.builder().userFrom(model.getUserFrom())
-                    .itemId(model.getItemId())
-                    .userTo(model.getUserTo()).paymentType(model.getPaymentType()).build();
+            return  PurchaseDto.builder().id(purchase.getId()).userFrom(purchase.getUserFrom().getLogin())
+                    .itemId(purchase.getItem().getId())
+                    .userTo(purchase.getUserTo().getLogin()).paymentType(purchase.getPaymentType()).build();
         } catch (Exception e) {
             throw new NotFound("User or item does not exist");
         }
     }
 
-    /*private Transaction doTransaction(Transaction transaction){
-            if(transaction.getStatus().equals(TransactionStatus.OK)){
-                transactionService.
-            }
-    }*/
     @Override
     public void delete(Long id) throws Exception {
         Purchase purchase = getById(id);

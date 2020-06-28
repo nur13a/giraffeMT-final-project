@@ -1,6 +1,10 @@
 package itAcademy.giraffeMT.giraffeMT.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import itAcademy.giraffeMT.giraffeMT.dto.clothes.ClothesDto;
+import itAcademy.giraffeMT.giraffeMT.dto.electronics.ElectronicDto;
+import itAcademy.giraffeMT.giraffeMT.dto.immovables.ImmovablesDto;
+import itAcademy.giraffeMT.giraffeMT.dto.transport.AutoModel;
 import itAcademy.giraffeMT.giraffeMT.entities.Item;
 import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.ItemModel;
@@ -19,16 +23,6 @@ import java.util.List;
 public class ItemController {
     @Autowired
     private ItemService itemService;
-//
-//    @PostMapping("/add")
-//    public ResponseEntity create(@RequestBody BaseItemModel itemModel) throws Exception {
-//        try {
-//            Item item = itemService.createBase(itemModel);
-//            return new ResponseEntity<>(item, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//    }
 
     @GetMapping
     public ResponseEntity getAll() {
@@ -90,6 +84,7 @@ public class ItemController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/searchByCategory/{category}")
     public ResponseEntity searchByCategory(@PathVariable("category") String category) {
         try {
@@ -100,24 +95,45 @@ public class ItemController {
         }
     }
 
-    @PostMapping("/searchTransport")
-    public ResponseEntity getTransports(@RequestBody ItemModel transportModel) {
+    @PostMapping("/search/filter/transport")
+    public ResponseEntity getTransports(@RequestBody TransportModel transportModel) {
         try {
-            List<ItemModel> list = itemService.searchTransport(transportModel);
+            List<TransportModel> list = itemService.searchTransport(transportModel);
             return new ResponseEntity<>(list, HttpStatus.FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
-//    @GetMapping("/searchByColor/{color}")
-//    public ResponseEntity getTransport(@PathVariable("color") String color) {
-//
-//        try {
-//            List<TransportModel> list = itemService.getByColorTransport(color);
-//            return new ResponseEntity<>(list, HttpStatus.FOUND);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @PostMapping("/search/filter/clothes")
+    public ResponseEntity getClothes(@RequestBody ClothesDto clothesDto) {
+        try {
+            List<ClothesDto> list = itemService.searchClothes(clothesDto);
+            return new ResponseEntity<>(list, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/search/filter/transport")
+    public ResponseEntity getElectronics(@RequestBody ElectronicDto electronicDto) {
+        try {
+            List<ElectronicDto> list = itemService.searchElectronics(electronicDto);
+            return new ResponseEntity<>(list, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/search/filter/immovables")
+    public ResponseEntity getImmovables(@RequestBody ImmovablesDto immovablesDto) {
+        try {
+            List<ImmovablesDto> list = itemService.searchImmovables(immovablesDto);
+            return new ResponseEntity<>(list, HttpStatus.FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }

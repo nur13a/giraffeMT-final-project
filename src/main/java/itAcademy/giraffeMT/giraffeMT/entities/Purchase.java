@@ -26,6 +26,7 @@ public class Purchase {
     @ManyToOne
     @JoinColumn(name = "userTo", referencedColumnName = "id")
     User userTo;
-    @Column(name = "cardPayment")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "paymentType")
     PaymentType paymentType;
 }

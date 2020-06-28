@@ -1,18 +1,13 @@
 package itAcademy.giraffeMT.giraffeMT.dto;
 
 import com.company.banksystem.enums.Currency;
-import itAcademy.giraffeMT.giraffeMT.entities.Category;
-import itAcademy.giraffeMT.giraffeMT.entities.Subcategory;
-import itAcademy.giraffeMT.giraffeMT.entities.User;
-import itAcademy.giraffeMT.giraffeMT.enums.Color;
-import itAcademy.giraffeMT.giraffeMT.enums.Gender;
-import itAcademy.giraffeMT.giraffeMT.enums.ItemState;
-import itAcademy.giraffeMT.giraffeMT.enums.Status;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import itAcademy.giraffeMT.giraffeMT.enums.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,11 +15,12 @@ import java.util.Date;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemModel {
     BigDecimal price;
     String description;
-        ItemState itemState;
-        String category;
+    ItemState itemState;
+    String category;
     Currency currency;
     String subcategory;
     String userLogin;
@@ -42,12 +38,15 @@ public class ItemModel {
     String cpu;
     String address;
     Double square;
-    Integer floors;
+    Integer floor;
     Integer roomNumber;
     String district;
     Double landArea;
     Gender gender;
     Status status;
+    Integer floorsNumber;
+    BuildingType buildingType;
+    List<AdditionalColumnDtoResponse>additionalColumn;
 }
 
 

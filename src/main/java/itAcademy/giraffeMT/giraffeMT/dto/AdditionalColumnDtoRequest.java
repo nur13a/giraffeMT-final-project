@@ -9,7 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class CategoryModel {
-    Long id;
-    String name;
+public class AdditionalColumnDtoRequest {
+    String columnName;
+    String info;
+    String categoryName;
+    String subcategoryName;
 }
