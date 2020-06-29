@@ -115,7 +115,7 @@ public class ItemController {
         }
     }
 
-    @PostMapping("/search/filter/transport")
+    @PostMapping("/search/filter/electronics")
     public ResponseEntity getElectronics(@RequestBody ElectronicDto electronicDto) {
         try {
             List<ElectronicDto> list = itemService.searchElectronics(electronicDto);

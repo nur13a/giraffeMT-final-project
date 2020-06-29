@@ -57,9 +57,9 @@ public class Item {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     Status status;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="additionalColumns", referencedColumnName = "id")
-    List<AdditionalColumnDtoResponse> additionalColumn;
+    List<AdditionalColumn> additionalColumn;
 
 
     @Column(name = "volume")

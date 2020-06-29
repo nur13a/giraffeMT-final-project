@@ -24,8 +24,9 @@ public class ClothesDto extends BaseItemModel {
     Gender gender;
 
     @Builder
-    public ClothesDto(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, String size, Color color, Gender gender, List<AdditionalColumnDtoResponse>additionalList) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink,status,additionalList);
+
+    public ClothesDto(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, List<AdditionalColumnDtoResponse> columns, String size, Color color, Gender gender) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink, status, columns);
         this.size = size;
         this.color = color;
         this.gender = gender;

@@ -26,8 +26,8 @@ public class HouseDto extends BaseItemModel {
     String district;
     BuildingType buildingType;
     String  address;
+    
 @Builder
-
     public HouseDto(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, Double square, Double landArea, Integer roomNumber, Integer floorsNumber, String district, BuildingType buildingType, String address, List<AdditionalColumnDtoResponse> additionalList) {
         super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink, status,additionalList);
         this.square = square;

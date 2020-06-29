@@ -17,6 +17,7 @@ import itAcademy.giraffeMT.giraffeMT.dto.BaseItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.ItemModel;
 import itAcademy.giraffeMT.giraffeMT.dto.immovables.FlatDto;
 import itAcademy.giraffeMT.giraffeMT.repositories.ItemRepository;
+import itAcademy.giraffeMT.giraffeMT.services.AdditionalColumnService;
 import itAcademy.giraffeMT.giraffeMT.services.ItemService;
 import itAcademy.giraffeMT.giraffeMT.services.UserService;
 
@@ -42,6 +43,8 @@ public class ItemServiceImpl implements ItemService {
     private CategoryServiceImpl categoryService;
     @Autowired
     private SubcategoryServiceImpl subcategoryService;
+    @Autowired
+    private AdditionalColumnService additionalColumnService;
 
     @Override
     public List<Item> getAll() {
@@ -100,14 +103,15 @@ public class ItemServiceImpl implements ItemService {
             }
 
         } else if (user != null) {
-            Item item =Item.builder().user(user)
+            List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(model.getAdditionalColumn());
+            Item item = Item.builder().user(user)
                     .price(model.getPrice())
                     .description(model.getDescription())
                     .itemState(model.getItemState())
                     .currency(model.getCurrency())
                     .status(Status.ACTIVE)
                     .photoLink(addImage(multipartFile))
-                    .additionalColumn(model.getAdditionalColumn())
+                    .additionalColumn(additionalColumnList)
                     .build();
             itemRepository.save(item);
             return createByDefault(model, user, null, null, multipartFile);
@@ -127,7 +131,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     private AutoModel createAuto(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
-
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder().
                 category(category)
                 .subcategory(subcategory)
@@ -145,7 +149,7 @@ public class ItemServiceImpl implements ItemService {
                 .user(user)
                 .photoLink(addImage(photo))
                 .status(Status.ACTIVE)
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         AutoModel autoModel = AutoModel.builder().
@@ -165,12 +169,13 @@ public class ItemServiceImpl implements ItemService {
                 .subcategory(item.getSubcategory().getName())
                 .photoLink(item.getPhotoLink())
                 .status(item.getStatus())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .build();
         return autoModel;
     }
 
-    private BicycleModel createBicycle(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+    private BicycleModel createBicycle(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException, NotFound {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -183,7 +188,7 @@ public class ItemServiceImpl implements ItemService {
                 .category(category)
                 .itemState(it.getItemState())
                 .status(Status.ACTIVE)
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         BicycleModel model = BicycleModel.builder()
@@ -198,12 +203,13 @@ public class ItemServiceImpl implements ItemService {
                 .category(item.getCategory().getName())
                 .itemState(item.getItemState())
                 .status(item.getStatus())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .id(item.getId()).build();
         return model;
     }
 
     private MotocycleModel createMotocycle(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -217,7 +223,7 @@ public class ItemServiceImpl implements ItemService {
                 .category(category)
                 .itemState(it.getItemState())
                 .status(Status.ACTIVE)
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         MotocycleModel model = MotocycleModel.builder()
@@ -233,12 +239,13 @@ public class ItemServiceImpl implements ItemService {
                 .category(item.getCategory().getName())
                 .itemState(item.getItemState())
                 .status(item.getStatus())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .id(item.getId()).build();
         return model;
     }
 
     private FlatDto createFlat(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -256,7 +263,7 @@ public class ItemServiceImpl implements ItemService {
                 .floorsNumber(it.getFloorsNumber())
                 .buildingType(it.getBuildingType())
                 .status(Status.ACTIVE)
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         FlatDto model = FlatDto.builder()
@@ -276,12 +283,13 @@ public class ItemServiceImpl implements ItemService {
                 .floorsNumber(item.getFloorsNumber())
                 .square(item.getSquare())
                 .buildingType(item.getBuildingType())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .build();
         return model;
     }
 
     private HouseDto createHouse(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -301,7 +309,7 @@ public class ItemServiceImpl implements ItemService {
                 .landArea(it.getLandArea())
                 .status(Status.ACTIVE)
                 .buildingType(it.getBuildingType())
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         HouseDto model = HouseDto.builder()
@@ -320,12 +328,13 @@ public class ItemServiceImpl implements ItemService {
                 .floorsNumber(item.getFloorsNumber())
                 .landArea(item.getLandArea())
                 .square(item.getSquare())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .buildingType(item.getBuildingType()).build();
         return model;
     }
 
     private PhoneDto createPhone(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -339,7 +348,7 @@ public class ItemServiceImpl implements ItemService {
                 .color(it.getColor())
                 .memory(it.getMemory())
                 .model(it.getModel())
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         PhoneDto model = PhoneDto.builder()
@@ -356,12 +365,13 @@ public class ItemServiceImpl implements ItemService {
                 .color(item.getColor())
                 .memory(item.getMemory())
                 .model(item.getModel())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .build();
         return model;
     }
 
     private ComputerDto createComputer(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -377,7 +387,7 @@ public class ItemServiceImpl implements ItemService {
                 .ssd(it.getSsd())
                 .memory(it.getMemory())
                 .model(it.getModel())
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         ComputerDto model = ComputerDto.builder()
@@ -396,12 +406,13 @@ public class ItemServiceImpl implements ItemService {
                 .cpu(item.getCpu())
                 .numberCores(item.getNumberCores())
                 .ssd(item.getSsd())
-                .additionalList(item.getAdditionalColumn())
+                .additionalList(it.getAdditionalColumn())
                 .build();
         return model;
     }
 
     private ClothesDto createClothes(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -415,7 +426,7 @@ public class ItemServiceImpl implements ItemService {
                 .color(it.getColor())
                 .gender(it.getGender())
                 .size(it.getSize())
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         ClothesDto model = ClothesDto.builder()
@@ -432,12 +443,13 @@ public class ItemServiceImpl implements ItemService {
                 .color(item.getColor())
                 .gender(item.getGender())
                 .size(item.getSize())
-                .additionalList(item.getAdditionalColumn())
+                .columns(it.getAdditionalColumn())
                 .build();
         return model;
     }
 
     private BaseItemModel createByDefault(ItemModel it, User user, Category category, Subcategory subcategory, MultipartFile photo) throws IOException {
+        List<AdditionalColumn> additionalColumnList = additionalColumnService.updateByModel(it.getAdditionalColumn());
         Item item = Item.builder()
                 .description(it.getDescription())
                 .user(user)
@@ -448,7 +460,7 @@ public class ItemServiceImpl implements ItemService {
                 .category(category)
                 .itemState(it.getItemState())
                 .status(Status.ACTIVE)
-                .additionalColumn(it.getAdditionalColumn())
+                .additionalColumn(additionalColumnList)
                 .build();
         itemRepository.save(item);
         BaseItemModel model = new BaseItemModel();
@@ -462,7 +474,7 @@ public class ItemServiceImpl implements ItemService {
         model.setItemState(item.getItemState());
         model.setId(item.getId());
         model.setStatus(item.getStatus());
-        model.setColumns(item.getAdditionalColumn());
+        model.setColumns(it.getAdditionalColumn());
         return model;
     }
 

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -28,9 +28,10 @@ public class TransportModel extends BaseItemModel {
     Color color;
     String model;
     Gender gender;
-@Builder
-    public TransportModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, Double volume, String driveUnit, String bodyType, String issueYear, Integer millage, Color color, String model, Gender gender, List<AdditionalColumnDtoResponse> additionalList) {
-        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink, status,additionalList);
+
+    @Builder
+    public TransportModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, List<AdditionalColumnDtoResponse> columns, Double volume, String driveUnit, String bodyType, String issueYear, Integer millage, Color color, String model, Gender gender) {
+        super(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink, status, columns);
         this.volume = volume;
         this.driveUnit = driveUnit;
         this.bodyType = bodyType;
@@ -39,6 +40,5 @@ public class TransportModel extends BaseItemModel {
         this.color = color;
         this.model = model;
         this.gender = gender;
-
     }
 }

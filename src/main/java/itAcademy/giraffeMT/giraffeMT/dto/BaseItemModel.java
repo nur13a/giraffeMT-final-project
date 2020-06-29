@@ -17,7 +17,7 @@ import java.util.Objects;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 //@Builder
-
+@Data
 public  class BaseItemModel {
     Long id;
     BigDecimal price;
@@ -31,30 +31,7 @@ public  class BaseItemModel {
     Status status;
     List<AdditionalColumnDtoResponse> columns;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseItemModel)) return false;
-        BaseItemModel that = (BaseItemModel) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(price, that.price) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(userLogin, that.userLogin) &&
-                itemState == that.itemState &&
-                currency == that.currency &&
-                Objects.equals(category, that.category) &&
-                Objects.equals(subcategory, that.subcategory) &&
-                Objects.equals(photoLink, that.photoLink) &&
-                status == that.status &&
-                Objects.equals(columns, that.columns);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, price, description, userLogin, itemState, currency, category, subcategory, photoLink, status, columns);
-    }
-
-    @Builder
+   // @Builder
     public BaseItemModel(Long id, BigDecimal price, String description, String userLogin, ItemState itemState, Currency currency, String category, String subcategory, String photoLink, Status status, List<AdditionalColumnDtoResponse> columns) {
         this.id = id;
         this.price = price;

@@ -2,6 +2,7 @@ package itAcademy.giraffeMT.giraffeMT.entities;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
@@ -17,14 +18,18 @@ public class AdditionalColumn {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "columnName",unique = true,nullable = false)
-    String columnName;
-
     @Column(name = "info")
-    String inf0;
-    @Column(name = "category")
+    String info;
+    @ManyToOne
+    @JoinColumn(name = "columnName")
+    AdditionalColumnName columnName;
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @JoinColumn(name = "category")
     Category category;
-    @Column(name = "subcategory")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "subcategory")
     Subcategory subcategory;
 
 }
